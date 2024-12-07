@@ -7,11 +7,14 @@ document.addEventListener("DOMContentLoaded", function () {
     const receptionSection = document.querySelector(".reception");
     const chabbatSection = document.querySelector(".chabbat");
 
-    let currentAudio = null;
-    let observer = null;
+    let currentAudio = null; // Audio actuellement en cours
+    let isSwitching = false; // Flag pour éviter les conflits
 
     // Fonction pour croiser les fondus
     function crossFade(outgoingAudio, incomingAudio) {
+        if (isSwitching) return; // Empêche un autre changement pendant le fondu
+        isSwitching = true; // Active le flag de changement
+
         const fadeDuration = 1000; // Durée du fondu en millisecondes
         const intervalDuration = 50; // Durée entre chaque incrément (ms)
         const steps = fadeDuration / intervalDuration; // Nombre de pas dans le fondu
@@ -39,20 +42,20 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
                 if (incomingAudio) incomingAudio.volume = 1; // Assure un volume final correct
                 currentAudio = incomingAudio; // Met à jour l'audio actuel
+                isSwitching = false; // Libère le flag
             }
         }, intervalDuration);
     }
 
     // Fonction pour changer d'audio avec croisement de fondus
     function switchAudio(newAudio) {
-        if (currentAudio !== newAudio) {
-            crossFade(currentAudio, newAudio);
-        }
+        if (currentAudio === newAudio || isSwitching) return; // Évite les doublons ou interruptions
+        crossFade(currentAudio, newAudio);
     }
 
     // Fonction pour démarrer l'observation des sections
     function startObservingSections() {
-        observer = new IntersectionObserver((entries) => {
+        const observer = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
                 if (entry.isIntersecting) {
                     if (entry.target === debutSection) {
