@@ -7,46 +7,46 @@ document.addEventListener("DOMContentLoaded", function () {
     const receptionSection = document.querySelector(".reception");
     const chabbatSection = document.querySelector(".chabbat");
 
-    let currentAudio = null; // Aucun audio par défaut
-    let observer = null; // Observer initialisé après le clic
+    let currentAudio = null;
+    let observer = null;
 
-    // Fonction pour effectuer un fondu entre deux musiques
+    // Fonction pour croiser les fondus
     function crossFade(outgoingAudio, incomingAudio) {
-        const fadeDuration = 1000; // Durée du fondu (en ms)
-        const intervalDuration = 50; // Pas de l'animation (en ms)
-        const steps = fadeDuration / intervalDuration; // Nombre d'étapes
+        const fadeDuration = 1000; // Durée du fondu en millisecondes
+        const intervalDuration = 50; // Durée entre chaque incrément (ms)
+        const steps = fadeDuration / intervalDuration; // Nombre de pas dans le fondu
         let currentStep = 0;
 
-        if (incomingAudio) {
-            incomingAudio.volume = 0; // La nouvelle musique commence silencieuse
-            incomingAudio.play();
-        }
+        if (incomingAudio) incomingAudio.volume = 0;
+        if (incomingAudio) incomingAudio.play();
 
         const fadeInterval = setInterval(() => {
             currentStep++;
 
-            // Ajuste les volumes
-            if (outgoingAudio) outgoingAudio.volume = Math.max(1 - currentStep / steps, 0);
-            if (incomingAudio) incomingAudio.volume = Math.min(currentStep / steps, 1);
+            // Calcul des volumes
+            const outgoingVolume = Math.max(1 - currentStep / steps, 0);
+            const incomingVolume = Math.min(currentStep / steps, 1);
 
-            // Fin du fondu
+            if (outgoingAudio) outgoingAudio.volume = outgoingVolume;
+            if (incomingAudio) incomingAudio.volume = incomingVolume;
+
+            // Quand le fondu est terminé
             if (currentStep >= steps) {
                 clearInterval(fadeInterval);
-
                 if (outgoingAudio) {
                     outgoingAudio.pause();
-                    outgoingAudio.currentTime = 0; // Réinitialise la musique sortante
+                    outgoingAudio.currentTime = 0;
                 }
-
-                currentAudio = incomingAudio; // Met à jour l'audio en cours
+                if (incomingAudio) incomingAudio.volume = 1; // Assure un volume final correct
+                currentAudio = incomingAudio; // Met à jour l'audio actuel
             }
         }, intervalDuration);
     }
 
-    // Fonction pour changer de musique avec fondu
+    // Fonction pour changer d'audio avec croisement de fondus
     function switchAudio(newAudio) {
         if (currentAudio !== newAudio) {
-            crossFade(currentAudio, newAudio); // Effectue le fondu entre l'audio actuel et le nouveau
+            crossFade(currentAudio, newAudio);
         }
     }
 
@@ -68,17 +68,16 @@ document.addEventListener("DOMContentLoaded", function () {
             threshold: 0.5 // Changement lorsque 50 % de la section est visible
         });
 
-        // Observer les sections concernées
         observer.observe(debutSection);
         observer.observe(receptionSection);
         observer.observe(chabbatSection);
     }
 
-    // Fonction pour démarrer la gestion des musiques (appelée au clic)
+    // Fonction pour démarrer le système de musiques
     window.startMusicSystem = function () {
-        debutAudio.volume = 0; // La première musique commence silencieuse
-        debutAudio.play(); // Démarre la musique de départ
-        crossFade(null, debutAudio); // Applique un fondu entrant à la première musique
+        debutAudio.volume = 0; // Assure que l'audio commence silencieux
+        debutAudio.play(); // Démarre la première musique
+        crossFade(null, debutAudio); // Applique un fondu entrant pour la première musique
         currentAudio = debutAudio; // Définit l'audio actuel
         startObservingSections(); // Active l'observation
     };
