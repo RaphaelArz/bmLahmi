@@ -7,47 +7,50 @@ document.addEventListener("DOMContentLoaded", function () {
     const receptionSection = document.querySelector(".reception");
     const chabbatSection = document.querySelector(".chabbat");
 
-    let currentAudio = null; // Audio en cours de lecture
+    let currentAudio = null;
     let observer = null;
 
-    // Fonction pour effectuer un fondu audio
+    // Fonction pour croiser les fondus
     function crossFade(outgoingAudio, incomingAudio) {
-        const fadeDuration = 1000; // Durée totale du fondu (ms)
-        const steps = 20; // Nombre de pas dans le fondu
-        const stepDuration = fadeDuration / steps;
+        const fadeDuration = 1000; // Durée du fondu en millisecondes
+        const intervalDuration = 50; // Durée entre chaque incrément (ms)
+        const steps = fadeDuration / intervalDuration; // Nombre de pas dans le fondu
         let currentStep = 0;
 
-        if (incomingAudio && incomingAudio.paused) {
-            incomingAudio.volume = 0;
-            incomingAudio.play().catch((err) => console.error("Erreur lors de la lecture : ", err));
-        }
+        if (incomingAudio) incomingAudio.volume = 0;
+        if (incomingAudio) incomingAudio.play();
 
-        const interval = setInterval(() => {
+        const fadeInterval = setInterval(() => {
             currentStep++;
-            const progress = currentStep / steps;
 
-            if (outgoingAudio) outgoingAudio.volume = Math.max(1 - progress, 0);
-            if (incomingAudio) incomingAudio.volume = Math.min(progress, 1);
+            // Calcul des volumes
+            const outgoingVolume = Math.max(1 - currentStep / steps, 0);
+            const incomingVolume = Math.min(currentStep / steps, 1);
 
+            if (outgoingAudio) outgoingAudio.volume = outgoingVolume;
+            if (incomingAudio) incomingAudio.volume = incomingVolume;
+
+            // Quand le fondu est terminé
             if (currentStep >= steps) {
-                clearInterval(interval);
+                clearInterval(fadeInterval);
                 if (outgoingAudio) {
-                    outgoingAudio.pause(); // Pause uniquement après un fondu complet
+                    outgoingAudio.pause();
                     outgoingAudio.currentTime = 0;
                 }
-                currentAudio = incomingAudio; // Définir l'audio actif
+                if (incomingAudio) incomingAudio.volume = 1; // Assure un volume final correct
+                currentAudio = incomingAudio; // Met à jour l'audio actuel
             }
-        }, stepDuration);
+        }, intervalDuration);
     }
 
-    // Fonction pour changer d'audio
+    // Fonction pour changer d'audio avec croisement de fondus
     function switchAudio(newAudio) {
         if (currentAudio !== newAudio) {
             crossFade(currentAudio, newAudio);
         }
     }
 
-    // Observer les sections visibles
+    // Fonction pour démarrer l'observation des sections
     function startObservingSections() {
         observer = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
@@ -61,26 +64,21 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                 }
             });
-        }, { threshold: 0.5 });
+        }, {
+            threshold: 0.5 // Changement lorsque 50 % de la section est visible
+        });
 
         observer.observe(debutSection);
         observer.observe(receptionSection);
         observer.observe(chabbatSection);
     }
 
-    // Fonction pour initialiser la musique après interaction utilisateur
-    function startMusicSystem() {
-        if (currentAudio) return; // Empêche de démarrer plusieurs fois
-
-        debutAudio.volume = 0; // Prépare l'audio initial
-        debutAudio.play().catch((err) => console.error("Erreur de lecture audio :", err));
-        currentAudio = debutAudio;
-        startObservingSections();
-    }
-
-    // Ajout d'un événement de clic pour démarrer la musique
-    const invitationButton = document.getElementById("invitationButton");
-    if (invitationButton) {
-        invitationButton.addEventListener("click", startMusicSystem);
-    }
+    // Fonction pour démarrer le système de musiques
+    window.startMusicSystem = function () {
+        debutAudio.volume = 0; // Assure que l'audio commence silencieux
+        debutAudio.play(); // Démarre la première musique
+        crossFade(null, debutAudio); // Applique un fondu entrant pour la première musique
+        currentAudio = debutAudio; // Définit l'audio actuel
+        startObservingSections(); // Active l'observation
+    };
 });
