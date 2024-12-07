@@ -7,46 +7,18 @@ document.addEventListener("DOMContentLoaded", function () {
     const receptionSection = document.querySelector(".reception");
     const chabbatSection = document.querySelector(".chabbat");
 
-    let currentAudio = null;
-    let observer = null;
+    let currentAudio = null; // Aucun audio par défaut
+    let observer = null; // Observer initialisé après le clic
 
-    // Fonction pour croiser les fondus
-    function crossFade(outgoingAudio, incomingAudio) {
-        const fadeDuration = 1000; // Durée du fondu en millisecondes
-        const intervalDuration = 50; // Durée entre chaque incrément (ms)
-        const steps = fadeDuration / intervalDuration; // Nombre de pas dans le fondu
-        let currentStep = 0;
-
-        if (incomingAudio) incomingAudio.volume = 0;
-        if (incomingAudio) incomingAudio.play();
-
-        const fadeInterval = setInterval(() => {
-            currentStep++;
-
-            // Calcul des volumes
-            const outgoingVolume = Math.max(1 - currentStep / steps, 0);
-            const incomingVolume = Math.min(currentStep / steps, 1);
-
-            if (outgoingAudio) outgoingAudio.volume = outgoingVolume;
-            if (incomingAudio) incomingAudio.volume = incomingVolume;
-
-            // Quand le fondu est terminé
-            if (currentStep >= steps) {
-                clearInterval(fadeInterval);
-                if (outgoingAudio) {
-                    outgoingAudio.pause();
-                    outgoingAudio.currentTime = 0;
-                }
-                if (incomingAudio) incomingAudio.volume = 1; // Assure un volume final correct
-                currentAudio = incomingAudio; // Met à jour l'audio actuel
-            }
-        }, intervalDuration);
-    }
-
-    // Fonction pour changer d'audio avec croisement de fondus
+    // Fonction pour changer d'audio
     function switchAudio(newAudio) {
         if (currentAudio !== newAudio) {
-            crossFade(currentAudio, newAudio);
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0; // Réinitialiser l'ancien audio
+            }
+            currentAudio = newAudio;
+            currentAudio.play();
         }
     }
 
@@ -68,27 +40,16 @@ document.addEventListener("DOMContentLoaded", function () {
             threshold: 0.5 // Changement lorsque 50 % de la section est visible
         });
 
+        // Observer les sections concernées
         observer.observe(debutSection);
         observer.observe(receptionSection);
         observer.observe(chabbatSection);
     }
 
-    // Fonction pour démarrer le système de musiques
+    // Fonction pour démarrer la gestion des musiques (appelée au clic)
     window.startMusicSystem = function () {
-        debutAudio.volume = 0; // Assure que l'audio commence silencieux
-        debutAudio.play().catch(err => {
-            console.error('Erreur de lecture audio:', err);
-        }); // Démarre la première musique
-        crossFade(null, debutAudio); // Applique un fondu entrant pour la première musique
+        debutAudio.play(); // Démarre la musique de départ
         currentAudio = debutAudio; // Définit l'audio actuel
         startObservingSections(); // Active l'observation
     };
-
-    // Fonction d'initialisation de la page avec l'écouteur d'événements pour démarrer la musique
-    const invitationButton = document.getElementById("invitationButton");
-    if (invitationButton) {
-        invitationButton.addEventListener("click", function() {
-            startMusicSystem(); // Démarre le système de musique lorsque l'invitation est vue
-        });
-    }
 });
