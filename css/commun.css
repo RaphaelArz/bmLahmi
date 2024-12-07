@@ -1,0 +1,150 @@
+@font-face {
+  font-family: 'Berlin Sans FB';
+  font-style: normal;
+  font-weight: normal;
+  src:  url('/police/BRLNSR.woff') format('woff');
+}
+@font-face {
+  font-family: 'Brush Script MT';
+  font-style: normal;
+  font-weight: normal;
+  src:  url('/police/BRUSHSCI.TTF') format('truetype');
+}
+@font-face {
+  font-family: 'Amsterdam';
+  font-style: normal;
+  font-weight: normal;
+  src:  url('/police/Amsterdam.ttf') format('truetype');
+}
+
+
+@font-face {
+  font-family: 'Great Vibes';
+  font-style: normal;
+  font-weight: normal;
+  src:  url('/police/GreatVibes-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'torah sofer';
+  font-style: normal;
+  font-weight: normal;
+  src:  url('/police/TORAH.TTF') format('truetype');
+}
+@font-face {
+  font-family: 'DMSerif';
+  font-style: normal;
+  font-weight: bold;
+  src:  url('/police/DMSerifDisplay-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Membra';
+  font-style: normal;
+  font-weight: normal;
+  src:  url('/police/membra.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'pinyon';
+  font-style: normal;
+  font-weight: bold;
+  src:  url('/police/PinyonScript-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'cormorand';
+  font-style: normal;
+  font-weight: bold;
+  src:  url('/police/CormorantGaramond-Regular.ttf') format('truetype');
+}
+
+
+/* Styles for the overlay */
+#overlay {
+  background-image: url("/img/paterneMarbleblancDoree.jpg");
+  background-size: cover;
+  background-position: top;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #fffaf4; /* Semi-transparent black background */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  opacity: 1; /* Initially visible */
+  transition: opacity 0.5s; /* Smooth transition for opacity change */
+  z-index: 2000; /* Assurez-vous que z-index est inférieur à celui de l'overlay */
+
+}
+
+#overlay.hidden {
+  opacity: 0; /* Make overlay invisible */
+  pointer-events: none; /* Disable pointer events on the hidden overlay */
+}
+
+
+
+body{
+  margin: 0 0 0 0;
+  padding: 0 0 0 0;
+  background-size: cover;
+  background-image: url("/img/paterneMarbleblancDoree.jpg");
+
+}
+
+footer {
+
+  text-align: center;
+background-color: #2d2d2d;
+  padding: 20px; /* Espacement intérieur pour un meilleur aspect */
+}
+span {
+  color: #ffffff; /* Couleur du texte */
+  font-size: 1.5rem; /* Taille du texte */
+  display: block; /* Pour que le texte apparaisse sur une ligne séparée */
+  margin-bottom: 10px; /* Espacement entre le texte et l'icône Instagram */
+  font-family: Membra;
+}
+
+.instagram-logo {
+  height: 1.3rem; /* Taille de l'icône Instagram */
+  width: auto; /* Ajustement automatique de la largeur */
+}
+
+#principale{
+  background-image: url("/img/paterneMarbleblancDoree.jpg");
+  background-size: cover;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center; /* Centre l'élément principal horizontalement */
+  align-items: center;
+  flex-direction: column;
+
+}
+
+
+
+
+
+
+.no-scroll {
+  overflow: hidden;
+}
+
+.star-of-david {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background-image: url('/img/maguenDavidBlanche.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+
+
