@@ -7,48 +7,81 @@ document.addEventListener("DOMContentLoaded", function () {
     const receptionSection = document.querySelector(".reception");
     const chabbatSection = document.querySelector(".chabbat");
 
-    let currentAudio = null; // Aucun audio par défaut
-    let observer = null; // Observer initialisé après le clic
+    let currentAudio = null; // L'audio actuellement en cours de lecture
+    let observer = null; // Observer activé après le clic
 
-    // Fonction pour changer d'audio
+    // Fonction pour effectuer un fondu entre deux musiques
+    function crossFade(outgoingAudio, incomingAudio) {
+        const fadeDuration = 1000; // Durée du fondu (en ms)
+        const intervalDuration = 50; // Pas de l'animation (en ms)
+        const steps = fadeDuration / intervalDuration; // Nombre d'étapes
+        let currentStep = 0;
+
+        if (incomingAudio) {
+            incomingAudio.volume = 0; // La nouvelle musique commence silencieuse
+            incomingAudio.play();
+        }
+
+        const fadeInterval = setInterval(() => {
+            currentStep++;
+
+            // Ajuste les volumes
+            if (outgoingAudio) outgoingAudio.volume = Math.max(1 - currentStep / steps, 0);
+            if (incomingAudio) incomingAudio.volume = Math.min(currentStep / steps, 1);
+
+            // Fin du fondu
+            if (currentStep >= steps) {
+                clearInterval(fadeInterval);
+
+                if (outgoingAudio) {
+                    outgoingAudio.pause();
+                    outgoingAudio.currentTime = 0; // Réinitialise la musique sortante
+                }
+
+                currentAudio = incomingAudio; // Met à jour l'audio en cours
+            }
+        }, intervalDuration);
+    }
+
+    // Fonction pour changer de musique avec fondu
     function switchAudio(newAudio) {
         if (currentAudio !== newAudio) {
-            if (currentAudio) {
-                currentAudio.pause();
-                currentAudio.currentTime = 0; // Réinitialiser l'ancien audio
-            }
-            currentAudio = newAudio;
-            currentAudio.play();
+            crossFade(currentAudio, newAudio);
         }
     }
 
     // Fonction pour démarrer l'observation des sections
     function startObservingSections() {
+        const sections = [debutSection, receptionSection, chabbatSection];
+        const audioMap = {
+            debut: debutAudio,
+            reception: receptionAudio,
+            chabbat: chabbatAudio,
+        };
+
         observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    if (entry.target === debutSection) {
-                        switchAudio(debutAudio);
-                    } else if (entry.target === receptionSection) {
-                        switchAudio(receptionAudio);
-                    } else if (entry.target === chabbatSection) {
-                        switchAudio(chabbatAudio);
-                    }
-                }
-            });
+            let visibleSections = entries
+                .filter((entry) => entry.isIntersecting)
+                .sort((a, b) => b.intersectionRatio - a.intersectionRatio); // Trie par visibilité décroissante
+
+            if (visibleSections.length > 0) {
+                const mainSection = visibleSections[0].target; // Section majoritairement visible
+                const newAudio = audioMap[mainSection.classList[0]]; // Associe l'audio correspondant
+                switchAudio(newAudio);
+            }
         }, {
-            threshold: 0.5 // Changement lorsque 50 % de la section est visible
+            threshold: Array.from({ length: 101 }, (_, i) => i / 100), // Détection fine
         });
 
-        // Observer les sections concernées
-        observer.observe(debutSection);
-        observer.observe(receptionSection);
-        observer.observe(chabbatSection);
+        // Observer toutes les sections
+        sections.forEach((section) => observer.observe(section));
     }
 
-    // Fonction pour démarrer la gestion des musiques (appelée au clic)
+    // Fonction pour démarrer le système de musiques (appelée au clic)
     window.startMusicSystem = function () {
+        debutAudio.volume = 0; // La première musique commence silencieuse
         debutAudio.play(); // Démarre la musique de départ
+        crossFade(null, debutAudio); // Applique un fondu entrant à la première musique
         currentAudio = debutAudio; // Définit l'audio actuel
         startObservingSections(); // Active l'observation
     };
