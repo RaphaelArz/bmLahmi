@@ -76,9 +76,19 @@ document.addEventListener("DOMContentLoaded", function () {
     // Fonction pour démarrer le système de musiques
     window.startMusicSystem = function () {
         debutAudio.volume = 0; // Assure que l'audio commence silencieux
-        debutAudio.play(); // Démarre la première musique
+        debutAudio.play().catch(err => {
+            console.error('Erreur de lecture audio:', err);
+        }); // Démarre la première musique
         crossFade(null, debutAudio); // Applique un fondu entrant pour la première musique
         currentAudio = debutAudio; // Définit l'audio actuel
         startObservingSections(); // Active l'observation
     };
+
+    // Fonction d'initialisation de la page avec l'écouteur d'événements pour démarrer la musique
+    const invitationButton = document.getElementById("invitationButton");
+    if (invitationButton) {
+        invitationButton.addEventListener("click", function() {
+            startMusicSystem(); // Démarre le système de musique lorsque l'invitation est vue
+        });
+    }
 });
