@@ -57,6 +57,13 @@
   font-weight: bold;
   src:  url('/police/CormorantGaramond-Regular.ttf') format('truetype');
 }
+@font-face {
+  font-family: 'neon';
+  font-style: normal;
+  font-weight: bold;
+  src:  url('/police/Neonlux.ttf') format('truetype');
+}
+
 
 
 /* Styles for the overlay */
@@ -91,7 +98,7 @@ body{
   margin: 0 0 0 0;
   padding: 0 0 0 0;
   background-size: cover;
-  background-image: url("/img/paterneMarbleblancDoree.jpg");
+  background-image: url("/img/neonRose.jpg");
 
 }
 
@@ -115,8 +122,8 @@ span {
 }
 
 #principale{
-  background-image: url("/img/paterneMarbleblancDoree.jpg");
-  background-size: cover;
+  background-image: url("/img/neonRose.jpg");
+  background-size: contain;
   width: 100%;
   height: 100%;
   display: flex;
