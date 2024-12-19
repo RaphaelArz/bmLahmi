@@ -1,0 +1,84 @@
+@font-face {
+  font-family: 'Berlin Sans FB';
+  font-style: normal;
+  font-weight: normal;
+  src:  url('/police/BRLNSR.woff') format('woff');
+}
+@font-face {
+  font-family: 'Brush Script MT';
+  font-style: normal;
+  font-weight: normal;
+  src:  url('/police/BRUSHSCI.TTF') format('truetype');
+}
+@font-face {
+  font-family: 'Amsterdam';
+  font-style: normal;
+  font-weight: normal;
+  src:  url('/police/Amsterdam.ttf') format('truetype');
+}
+
+
+@font-face {
+  font-family: 'Great Vibes';
+  font-style: normal;
+  font-weight: normal;
+  src:  url('/police/GreatVibes-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'torah sofer';
+  font-style: normal;
+  font-weight: normal;
+  src:  url('/police/TORAH.TTF') format('truetype');
+}
+@font-face {
+  font-family: 'DMSerif';
+  font-style: normal;
+  font-weight: bold;
+  src:  url('/police/DMSerifDisplay-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Membra';
+  font-style: normal;
+  font-weight: normal;
+  src:  url('/police/membra.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'pinyon';
+  font-style: normal;
+  font-weight: bold;
+  src:  url('/police/PinyonScript-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'cormorand';
+  font-style: normal;
+  font-weight: bold;
+  src:  url('/police/CormorantGaramond-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'neon';
+  font-style: normal;
+  font-weight: bold;
+  src:  url('/police/Neonlux.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'neon';
+  font-style: normal;
+  font-weight: bold;
+  src:  url('/police/Neonlux.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'brush';
+  font-style: normal;
+  font-weight: bold;
+  src:  url('/police/Amsterdam.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'brush-Script';
+  font-style: normal;
+  font-weight: bold;
+  src:  url('/police/BRUSHSCI.TTF') format('truetype');
+}
+
